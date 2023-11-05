@@ -6,10 +6,9 @@ import * as vscode from 'vscode';
  */
 export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(
-		vscode.commands.registerCommand('phpstorm-formatter.helloWorld', () => {
+		vscode.commands.registerCommand('phpstorm-formatter.formatPhpFile', () => {
 			const phpstormBinDir = vscode.workspace.getConfiguration('phpstorm-formatter').get('phpstormBinDir');
 
-			// No configuration.
 			if (!phpstormBinDir) {
 				vscode.window.showErrorMessage(`PHPStorm Formatter could not format the document because phpstorm-formatter.phpstormBinDir configuration was not set.`);
 				return;
@@ -17,14 +16,20 @@ export function activate(context: vscode.ExtensionContext) {
 
 			const absoluteFilePath = vscode.window.activeTextEditor?.document.fileName;
 
-			// No active text editor.
 			if (!absoluteFilePath) {
+				vscode.window.showErrorMessage(`No active text editor.`);
 				return;
 			}
 
-			// I can't do more because the script does not return an error or success code to the CLI.
+			if (!absoluteFilePath.includes('.php')) {
+				vscode.window.showErrorMessage(`Only PHP files are supported.`);
+				return;
+			}
+
+			// I can't do more (like having a progress bar or something) because the script
+			// does not return an error or success code to the CLI.
 			vscode.window.showInformationMessage('PHPStorm formatter: Formatting file');
-			exec(`"${phpstormBinDir}" format -allowDefaults "${absoluteFilePath}"`);
+			exec(`"${phpstormBinDir}/phpstorm64.exe" format -allowDefaults "${absoluteFilePath}"`);
 		}),
 	);
 }

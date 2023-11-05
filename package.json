@@ -14,8 +14,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "phpstorm-formatter.helloWorld",
-        "title": "Hello World"
+        "command": "phpstorm-formatter.formatPhpFile",
+        "title": "Format PHP File"
       }
     ],
     "configuration": {
