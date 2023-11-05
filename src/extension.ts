@@ -1,26 +1,35 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
+import { exec } from 'child_process';
 import * as vscode from 'vscode';
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
+/**
+ * Handler called on each call to the registered command.
+ */
 export function activate(context: vscode.ExtensionContext) {
+	context.subscriptions.push(
+		vscode.commands.registerCommand('phpstorm-formatter.helloWorld', () => {
+			const phpstormBinDir = vscode.workspace.getConfiguration('phpstorm-formatter').get('phpstormBinDir');
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "phpstorm-formatter" is now active!');
+			// No configuration.
+			if (!phpstormBinDir) {
+				vscode.window.showErrorMessage(`PHPStorm Formatter could not format the document because phpstorm-formatter.phpstormBinDir configuration was not set.`);
+				return;
+			}
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	let disposable = vscode.commands.registerCommand('phpstorm-formatter.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from PHPStorm Formatter!');
-	});
+			const absoluteFilePath = vscode.window.activeTextEditor?.document.fileName;
 
-	context.subscriptions.push(disposable);
+			// No active text editor.
+			if (!absoluteFilePath) {
+				return;
+			}
+
+			// I can't do more because the script does not return an error or success code to the CLI.
+			vscode.window.showInformationMessage('PHPStorm formatter: Formatting file');
+			exec(`"${phpstormBinDir}" format -allowDefaults "${absoluteFilePath}"`);
+		}),
+	);
 }
 
-// This method is called when your extension is deactivated
-export function deactivate() {}
+/**
+ * Handler called when the extension is deactivated.
+ */
+export function deactivate() { /** Nothing. */ }

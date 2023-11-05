@@ -17,7 +17,17 @@
         "command": "phpstorm-formatter.helloWorld",
         "title": "Hello World"
       }
-    ]
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "PHPStorm Formatter Settings",
+      "properties": {
+        "phpstorm-formatter.phpstormBinDir": {
+          "type": "string",
+          "description": "PHPStorm bin directory path"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
