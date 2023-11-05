@@ -29,7 +29,11 @@ export function activate(context: ExtensionContext) {
 			// I can't do more (like having a progress bar or something) because the script
 			// does not return an error or success code to the CLI.
 			window.showInformationMessage('PHPStorm formatter: Formatting file');
-			exec(`"${phpstormBinDir}/phpstorm64.exe" format -allowDefaults "${absoluteFilePath}"`);
+			exec(`"${phpstormBinDir}/phpstorm64.exe" format -allowDefaults "${absoluteFilePath}"`, error => {
+				if (error) {
+					window.showErrorMessage('PHPStorm Formatter failed.');
+				}
+			});
 		}),
 	);
 }
